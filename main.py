@@ -15,7 +15,6 @@ for model_name in model_names:
     models[model_name] = joblib.load(f'{model_name}.pkl')
 
 st.title('Heart Disease Health Indicators :anatomical_heart:')
-
 st.divider()
 
 st.header('Input Features')
@@ -26,7 +25,7 @@ fruits_map = {0: 'Does not consume fruits', 1: 'Consumes fruits regularly'}
 gen_hlth_map = {1: 'Excellent', 2: 'Good', 3: 'Average', 4: 'Fair', 5: 'Poor'}
 pred_map = {0: 'No risk of Heart Disease found', 1: 'Having s high risk of Heart Disease'}
 
-# Display input features with text descriptions
+# Input features
 high_bp = st.radio('High Blood Pressure', ['No', 'Yes'])
 high_chol = st.radio('High Cholesterol', ['No', 'Yes'])
 chol_check = st.radio('Cholesterol Checked', ['No', 'Yes'])
@@ -36,8 +35,17 @@ diabetes = st.selectbox('Diabetes', options=list(diabetes_map.values()))
 fruits = st.radio('Fruits', options=list(fruits_map.values()))
 gen_hlth = st.select_slider('General Health', options=list(gen_hlth_map.values()).__reversed__())
 
+def predict_input_data(models, input_data, scaler):
+    scaled_input_data = scaler.transform(input_data.reshape(1, -1))
+    predictions = {}
+    for model_name, model in models.items():
+        predictions[model_name] = model.predict(scaled_input_data)
+    return predictions
+
 # Predict
-if st.button('Predict'):
+predict_btn_clicked = st.button('Predict')
+
+if predict_btn_clicked:
     high_bp_numeric = 1 if high_bp == 'Yes' else 0
     high_chol_numeric = 1 if high_chol == 'Yes' else 0
     chol_check_numeric = 1 if chol_check == 'Yes' else 0
@@ -48,17 +56,12 @@ if st.button('Predict'):
     
     input_data = np.array([high_bp_numeric, high_chol_numeric, chol_check_numeric, bmi, stroke_numeric, diabetes_numeric, fruits_numeric, gen_hlth_numeric])
     
-    scaled_input_data = scaler.transform(input_data.reshape(1,-1))
-
+    predictions = predict_input_data(models, input_data, scaler)
     st.balloons()
-
     st.divider()
 
-    for selected_model_name, selected_model in models.items():
-        prediction = selected_model.predict(scaled_input_data)
-
-        st.subheader(f'Prediction using {selected_model_name}')
-
+    st.subheader(f'Prediction using {model_name}')
+    for model_name, prediction in predictions.items():
         pred_str = ", ".join([pred_map[pred] for pred in prediction])
         if 0 in prediction:
             st.success(pred_str)
