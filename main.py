@@ -7,7 +7,7 @@ import joblib
 scaler = joblib.load('scaler.pkl')
 
 # Load the trained models
-model_names = ['NaiveBayes']
+model_names = ['NaiveBayes','XGBoost']
 
 models = {}
 
