@@ -1,5 +1,4 @@
 import streamlit as st
-import pandas as pd
 import numpy as np
 import joblib
 
@@ -9,12 +8,11 @@ scaler = joblib.load('scaler.pkl')
 # Load the trained models
 model_names = ['NaiveBayes','XGBoost']
 
-models = {}
-
-for model_name in model_names:
-    models[model_name] = joblib.load(f'{model_name}.pkl')
-
 st.title('Heart Disease Health Indicators :anatomical_heart:')
+st.divider()
+
+selected_model_name = st.selectbox('Select Model', model_names)
+model = joblib.load(f'{selected_model_name}.pkl')
 st.divider()
 
 st.header('Input Features')
@@ -37,10 +35,8 @@ gen_hlth = st.select_slider('General Health', options=list(gen_hlth_map.values()
 
 def predict_input_data(models, input_data, scaler):
     scaled_input_data = scaler.transform(input_data.reshape(1, -1))
-    predictions = {}
-    for model_name, model in models.items():
-        predictions[model_name] = model.predict(scaled_input_data)
-    return predictions
+    prediction = model.predict(scaled_input_data)
+    return prediction
 
 # Predict
 predict_btn_clicked = st.button('Predict')
@@ -56,14 +52,13 @@ if predict_btn_clicked:
     
     input_data = np.array([high_bp_numeric, high_chol_numeric, chol_check_numeric, bmi, stroke_numeric, diabetes_numeric, fruits_numeric, gen_hlth_numeric])
     
-    predictions = predict_input_data(models, input_data, scaler)
+    prediction  = predict_input_data(model, input_data, scaler)
     st.balloons()
     st.divider()
 
-    st.subheader(f'Prediction using {model_name}')
-    for model_name, prediction in predictions.items():
-        pred_str = ", ".join([pred_map[pred] for pred in prediction])
-        if 0 in prediction:
-            st.success(pred_str)
-        else:
-            st.error(pred_str)
+    st.subheader(f'Prediction using {selected_model_name}')
+    pred_str = pred_map[prediction[0]]
+    if prediction[0] == 0:
+        st.success(pred_str)
+    else:
+        st.error(pred_str)
