@@ -11,8 +11,8 @@ model_names = ['NaiveBayes','XGBoost']
 
 models = {}
 
-for model_name in model_names:
-    models[model_name] = joblib.load(f'{model_name}.pkl')
+selected_model_name = st.selectbox('Select Model', model_names)
+model_name = joblib.load(f'{selected_model_name}.pkl')
 
 st.title('Heart Disease Health Indicators :anatomical_heart:')
 st.divider()
