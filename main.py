@@ -52,7 +52,7 @@ if predict_btn_clicked:
     sex_numeric = 1 if sex == 'Man' else 0
     diff_walk_numeric = 1 if diff_walk == 'Yes' else 0
 
-    input_data = np.array([high_bp_numeric, high_chol_numeric, smoker_numeric, stroke_numeric, diabetes_numeric, gen_hlth_numeric, phys_hlth, sex_numeric, diff_walk_numeric, age])
+    input_data = np.array([high_bp_numeric, high_chol_numeric, smoker_numeric, stroke_numeric, diabetes_numeric, gen_hlth_numeric, phys_hlth, diff_walk_numeric, sex_numeric, age])
     
     prediction = predict_input_data(model, input_data, scaler)
     st.balloons()
