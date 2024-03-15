@@ -31,6 +31,7 @@ diabetes = st.selectbox('Diabetes', options=list(diabetes_map.values()))
 gen_hlth = st.select_slider('General Health', options=list(gen_hlth_map.values()).__reversed__())
 phys_hlth = st.slider('Physical Health', min_value=0, max_value=30, step=1)
 diff_walk = st.radio('Difficulty Walking', ['No', 'Yes'])
+sex = st.radio('Sex', ['Man', 'Woman'])
 age = st.number_input('Age', min_value=1, max_value=13, step=1)
 
 def predict_input_data(model, input_data, scaler):
@@ -48,9 +49,10 @@ if predict_btn_clicked:
     stroke_numeric = 1 if stroke == 'Yes' else 0
     diabetes_numeric = next(key for key, value in diabetes_map.items() if value == diabetes)
     gen_hlth_numeric = next(key for key, value in gen_hlth_map.items() if value == gen_hlth)
+    sex_numeric = 1 if sex == 'Man' else 0
     diff_walk_numeric = 1 if diff_walk == 'Yes' else 0
 
-    input_data = np.array([high_bp_numeric, high_chol_numeric, smoker_numeric, stroke_numeric, diabetes_numeric, gen_hlth_numeric, phys_hlth, diff_walk_numeric, age])
+    input_data = np.array([high_bp_numeric, high_chol_numeric, smoker_numeric, stroke_numeric, diabetes_numeric, gen_hlth_numeric, phys_hlth, sex_numeric, diff_walk_numeric, age])
     
     prediction = predict_input_data(model, input_data, scaler)
     st.balloons()
