@@ -2,8 +2,13 @@ import streamlit as st
 import numpy as np
 import joblib
 
-# Load the scaler object
-scaler = joblib.load('scaler.pkl')
+try:
+    # Load the scaler object
+    scaler = joblib.load('scaler.pkl')
+except FileNotFoundError:
+    st.error("Error: scaler.pkl file not found. Please make sure the file exists.")
+    # You may want to provide further instructions or fallback actions here
+
 
 # Load the trained models
 model_names = ['NaiveBayes', 'XGBoost']
